@@ -51,10 +51,10 @@ var ore_inventory := {
 
 var pickaxe_level: int = 1
 var max_durability_by_level := {
-	1: 500.0,
-	2: 750.0,
-	3: 1200.0,
-	4: 2000.0,
+	1: 400.0,
+	2: 650.0,
+	3: 1000.0,
+	4: 1200.0,
 }
 
 var start_y := 0.0
@@ -65,9 +65,9 @@ var shop_open := false
 var mining_dictionary := {
 	"(0, 0)": {"time": 0.5, "value": 1, "hardness": 0.5, "ore": "stone"},
 	"(1, 0)": {"time": 0.5, "value": 1, "hardness": 0.5, "ore": "stone"},
-	"(2, 0)": {"time": 0.8, "value": 3, "hardness": 0.8, "ore": "iron"},
-	"(3, 0)": {"time": 1.0, "value": 5, "hardness": 1.0, "ore": "gold"},
-	"(4, 0)": {"time": 1.5, "value": 10, "hardness": 1.5, "ore": "diamond"},
+	"(3, 0)": {"time": 0.8, "value": 3, "hardness": 0.8, "ore": "iron"},
+	"(5, 0)": {"time": 1.0, "value": 5, "hardness": 1.0, "ore": "gold"},
+	"(8, 0)": {"time": 1.5, "value": 10, "hardness": 1.5, "ore": "diamond"},
 }
 
 var mining_scene: PackedScene = preload("res://assets/mining.tscn")
@@ -134,7 +134,7 @@ func _refresh_sell_amount_limit() -> void:
 func _refresh_slider_max() -> void:
 	var max_dur: float = max_durability_by_level.get(pickaxe_level, 500.0)
 	slider.max_value = max_dur
-	durability = clamp(durability, 0.0, max_dur)
+	durability = max_dur
 
 func get_depth() -> int:
 	return int(max(0.0, floor((player.position.y - start_y) / TILE_SIZE)))
@@ -165,10 +165,12 @@ func toggle_shop() -> void:
 
 func _physics_process(delta: float) -> void:
 	if game_over:
+		if Input.is_key_pressed(KEY_R):
+			get_tree().reload_current_scene()
 		return
 
 	# Allow opening/closing shop any time
-	if Input.is_action_just_pressed("shop"):
+	if Input.is_action_just_pressed("shop") and player.position.y < -7.5 and player.position.x < -90.0 and player.position.x > -120.0:
 		toggle_shop()
 
 	# Keep HUD fresh
@@ -226,6 +228,18 @@ func _try_start_mine() -> void:
 
 	var tile_data: int = tilemap.get_cell_source_id(tile_coords)
 	if tile_data == -1:
+		# It's sky, turn it back into a solid block
+		# Using tile atlas coords (1, 0) which should be a basic block
+		if ore_inventory["stone"] > 0:
+			tilemap.set_cell(tile_coords, 0, Vector2i(1, 0))
+			ore_inventory["stone"] -= 1
+		elif ore_inventory["iron"] > 0:
+			tilemap.set_cell(tile_coords, 0, Vector2i(3, 0))
+			ore_inventory["iron"] -= 1
+		elif ore_inventory["gold"] > 0:
+			tilemap.set_cell(tile_coords, 0, Vector2i(5, 0))
+			ore_inventory["gold"] -= 1
+		print("Placed tile at: ", tile_coords)
 		# No tile here, nothing to mine
 		return
 
@@ -358,7 +372,7 @@ func check_win_lose() -> void:
 		call_deferred("_pause_game")
 
 func _pause_game() -> void:
-	get_tree().paused = true
+	player.queue_free()
 
 # --- Shop actions ---
 func _on_SellButton_pressed() -> void:
@@ -411,7 +425,6 @@ func _on_RepairButton_pressed() -> void:
 
 	coins -= cost_coins
 	ore_inventory[cost_ore_name] -= cost_ore_amount
-	durability = max_dur
 	
 	# If pickaxe was broken, clear game over state
 	if game_over:
@@ -444,7 +457,7 @@ func _on_UpgradeButton_pressed() -> void:
 	coins -= cost_coins
 	ore_inventory[cost_ore_name] -= cost_ore_amount
 	pickaxe_level += 1
-	weakness *= 0.8
+	weakness *= 0.9
 	_refresh_slider_max()
 	_refresh_sell_amount_limit()
 	update_ui()
