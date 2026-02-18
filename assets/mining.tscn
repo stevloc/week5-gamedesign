@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://b4r02ktn1upyx"]
+
+[ext_resource type="Texture2D" uid="uid://3pbe3ki2gd6d" path="res://assets/BreakingSpriteSheet.png" id="1_4dqlc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0tnpc"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(357, 736, 357, 368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vtaks"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(0, 736, 357, 368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvpfn"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(357, 368, 357, 368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(0, 368, 357, 368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvuet"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(357, 0, 357, 368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trtic"]
+atlas = ExtResource("1_4dqlc")
+region = Rect2(0, 0, 357, 368)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ir15t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0tnpc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vtaks")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kvpfn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dinhu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kvuet")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trtic")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Mining" type="AnimatedSprite2D" unique_id=2025931383]
+scale = Vector2(0.039, 0.038)
+sprite_frames = SubResource("SpriteFrames_ir15t")
+autoplay = "default"
+frame = 1
+frame_progress = 0.5353094

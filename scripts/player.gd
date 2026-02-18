@@ -3,6 +3,12 @@ extends CharacterBody2D
 const SPEED = 200.0
 const JUMP_VELOCITY = -400.0
 
+# --- INVISIBLE WALL SETTINGS ---
+# Adjust these values to match your map size
+const LEFT_BOUNDARY = -170
+const RIGHT_BOUNDARY = 170  # Looks like ~22 tiles wide based on screenshot (22 * 16 = 352)
+# You can also add top/bottom if needed, but gravity handles bottom usually
+
 # Get the gravity from the project settings
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var can_mine = true
@@ -18,7 +24,7 @@ func _physics_process(delta):
 		velocity.y = JUMP_VELOCITY
 
 	# Get input direction for left/right movement
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = Input.get_axis("move_left", "move_right")
 	if direction:
 		velocity.x = direction * SPEED
 		facing_direction.x = direction  # Update facing direction
@@ -33,13 +39,18 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
-	# Handle mining
-	if Input.is_key_pressed(KEY_P) and can_mine:
-		mine_block_in_direction()
-		can_mine = false
+	# --- ENFORCE INVISIBLE WALLS ---
+	# Clamp player position within boundaries
+	# This prevents walking off the left or right side of the map
+	global_position.x = clamp(global_position.x, LEFT_BOUNDARY, RIGHT_BOUNDARY)
 	
-	if not Input.is_key_pressed(KEY_P):
-		can_mine = true
+	# Handle mining
+	#if Input.is_action_just_pressed("mine") and can_mine:
+	#	mine_block_in_direction()
+	#	can_mine = false
+	
+	#if not Input.is_key_pressed(KEY_P):
+	#	can_mine = true
 
 func mine_block_in_direction():
 	# Get the tilemap from the scene
