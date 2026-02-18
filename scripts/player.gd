@@ -3,6 +3,12 @@ extends CharacterBody2D
 const SPEED = 200.0
 const JUMP_VELOCITY = -400.0
 
+# --- INVISIBLE WALL SETTINGS ---
+# Adjust these values to match your map size
+const LEFT_BOUNDARY = -170
+const RIGHT_BOUNDARY = 170  # Looks like ~22 tiles wide based on screenshot (22 * 16 = 352)
+# You can also add top/bottom if needed, but gravity handles bottom usually
+
 # Get the gravity from the project settings
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var can_mine = true
@@ -32,6 +38,11 @@ func _physics_process(delta):
 		facing_direction = Vector2(0, 1)   # Down
 
 	move_and_slide()
+	
+	# --- ENFORCE INVISIBLE WALLS ---
+	# Clamp player position within boundaries
+	# This prevents walking off the left or right side of the map
+	global_position.x = clamp(global_position.x, LEFT_BOUNDARY, RIGHT_BOUNDARY)
 	
 	# Handle mining
 	#if Input.is_action_just_pressed("mine") and can_mine:
