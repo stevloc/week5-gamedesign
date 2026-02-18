@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://be45mdqb4f1jm"]
 
-[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://dkc07s530tm0h" path="res://scripts/player.gd" id="1_player"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(16, 16)
@@ -15,8 +15,18 @@ offset_right = 8.0
 offset_bottom = 8.0
 color = Color(1, 0.8, 0.2, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=465151989]
 shape = SubResource("RectangleShape2D_player")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2144523069]
 zoom = Vector2(4, 4)
+
+[node name="Radius" type="ColorRect" parent="." unique_id=465569581]
+visible = false
+modulate = Color(1, 1, 1, 0.19607843)
+offset_left = -32.0
+offset_top = -32.0
+offset_right = -16.0
+offset_bottom = -16.0
+scale = Vector2(4, 4)
+color = Color(0.36718875, 0.9135659, 0.99999994, 1)

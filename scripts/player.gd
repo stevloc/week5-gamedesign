@@ -18,7 +18,7 @@ func _physics_process(delta):
 		velocity.y = JUMP_VELOCITY
 
 	# Get input direction for left/right movement
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = Input.get_axis("move_left", "move_right")
 	if direction:
 		velocity.x = direction * SPEED
 		facing_direction.x = direction  # Update facing direction
@@ -34,12 +34,12 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	# Handle mining
-	if Input.is_key_pressed(KEY_P) and can_mine:
-		mine_block_in_direction()
-		can_mine = false
+	#if Input.is_action_just_pressed("mine") and can_mine:
+	#	mine_block_in_direction()
+	#	can_mine = false
 	
-	if not Input.is_key_pressed(KEY_P):
-		can_mine = true
+	#if not Input.is_key_pressed(KEY_P):
+	#	can_mine = true
 
 func mine_block_in_direction():
 	# Get the tilemap from the scene
