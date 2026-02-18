@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bknivpgafgkfu" path="res://assets/brackeys_platformer_assets/sprites/world_tileset_clear.png" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://be45mdqb4f1jm" path="res://scenes/character_body_2d.tscn" id="2_player"]
 [ext_resource type="Texture2D" uid="uid://duo0ose18qc42" path="res://assets/Select-Sheet.png" id="5_iywne"]
+[ext_resource type="FontFile" uid="uid://qoqtvd48ibmn" path="res://assets/brackeys_platformer_assets/fonts/PixelOperator8.ttf" id="6_p57ef"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqjtg"]
 texture = ExtResource("1_uwrxv")
@@ -320,6 +321,14 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_iywne"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_p57ef"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_u5sy4"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_gee14"]
+
 [node name="Game" type="Node2D" unique_id=241603290]
 script = ExtResource("1_lbhrr")
 
@@ -346,3 +355,29 @@ sprite_frames = SubResource("SpriteFrames_0tnpc")
 autoplay = "default"
 frame = 1
 frame_progress = 0.96152925
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1258837393]
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer" unique_id=728393999]
+offset_left = 10.0
+offset_top = 1.0
+offset_right = 220.0
+offset_bottom = 121.0
+scale = Vector2(1, 2)
+theme_override_icons/grabber = SubResource("ViewportTexture_iywne")
+theme_override_icons/grabber_highlight = SubResource("CanvasTexture_p57ef")
+theme_override_icons/grabber_disabled = SubResource("CanvasTexture_u5sy4")
+theme_override_icons/tick = SubResource("CanvasTexture_gee14")
+value = 75.0
+editable = false
+scrollable = false
+
+[node name="Label" type="Label" parent="CanvasLayer/HSlider" unique_id=2116355207]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 23.5
+offset_right = 244.0
+offset_bottom = 55.5
+theme_override_fonts/font = ExtResource("6_p57ef")
+theme_override_font_sizes/font_size = 32
+text = "Durability"

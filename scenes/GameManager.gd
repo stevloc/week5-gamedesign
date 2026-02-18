@@ -14,12 +14,17 @@ var radius
 
 var tile_coords
 
+var durability = 100.0
+var weakness = 30.0
+
+var slider
+
 #DICTIONARY FOR MINING: MINING TIMES + VALUES
 #MAPPED TO ATLAS OF TILEMAP SPRITE SHEET
 var mining_dictionary = {
-	"(0, 0)": {"time": 0.5, "value": 0},
-	"(1, 0)": {"time": 0.5, "value": 1},
-	"(3, 0)": {"time": 1, "value": 2},
+	"(0, 0)": {"time": 0.5, "value": 0, "hardness": 0.5},
+	"(1, 0)": {"time": 0.5, "value": 1, "hardness": 0.5},
+	"(3, 0)": {"time": 1, "value": 2, "hardness": 1.0},
 }
 
 var mining = preload("res://assets/mining.tscn")
@@ -29,8 +34,10 @@ func _ready():
 	tilemap = get_node("TileMap/Layer1")
 	player = get_node("Player")
 	radius = get_node("Player/Radius")
+	slider = get_node("CanvasLayer/HSlider")
 
 func _physics_process(delta):
+	slider.value = durability
 	cursor.position = Vector2(floor(get_global_mouse_position().x/tile_size) * tile_size + tile_size/2.0,
 	floor(get_global_mouse_position().y/tile_size) * tile_size + tile_size/2.0)
 	if Input.is_action_just_pressed("mine"):
@@ -44,16 +51,17 @@ func _physics_process(delta):
 			if check_all_surrounding_tiles(cursor.position):
 				if tile_data != -1:  # -1 means no tile (already sky)
 					# There's a solid block, turn it into sky (erase it)
-					mine_status = true
-					mine_timer = 0.0
-					var atlas_coords = tilemap.get_cell_atlas_coords(tile_coords)
-					mine_time = mining_dictionary[str(atlas_coords)]["time"]
-					mine_value = mining_dictionary[str(atlas_coords)]["value"]
-					var inst = mining.instantiate()
-					inst.position = cursor.position
-					inst.get_sprite_frames().set_animation_speed("default", floor(10.0 - (mine_time * 5.0)))
-					print("mine time set to ", floor(10.0 - (mine_time * 5.0)))
-					add_child(inst)
+					if durability > 0:
+						mine_status = true
+						mine_timer = 0.0
+						var atlas_coords = tilemap.get_cell_atlas_coords(tile_coords)
+						mine_time = mining_dictionary[str(atlas_coords)]["time"]
+						mine_value = mining_dictionary[str(atlas_coords)]["value"]
+						var inst = mining.instantiate()
+						inst.position = cursor.position
+						inst.get_sprite_frames().set_animation_speed("default", floor(10.0 - (mine_time * 5.0)))
+						print("mine time set to ", floor(10.0 - (mine_time * 5.0)))
+						add_child(inst)
 					#tilemap.erase_cell(tile_coords)
 				else:
 					# It's sky, turn it back into a solid block
@@ -67,6 +75,9 @@ func _physics_process(delta):
 		if mine_status:
 			mine_timer += delta
 			if mine_timer >= mine_time:
+				var atlas_coords = tilemap.get_cell_atlas_coords(tile_coords)
+				durability -= mining_dictionary[str(atlas_coords)]["hardness"] * weakness
+				print("Durability now ", durability)
 				tilemap.erase_cell(tile_coords)
 				mine_status = false
 				print("Erased tile at: ", tile_coords)
